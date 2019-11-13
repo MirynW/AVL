@@ -123,11 +123,12 @@ void recur_preorder(Node* n) {
 
 void ll_rotate(Node** n) {
 	Node* temp_root = (*n);
+	Node* temp_weird = (*n)->right->left;
 	(*n) = (*n)->right;
-	temp_root->right = NULL;
+	temp_root->right = temp_weird;
 	(*n)->left = temp_root;
 	(*n)->height = max(get_height((*n)->left), get_height((*n)->right)) + 1;
-	(*n)->left->height = max(get_height((*n)->left), get_height((*n)->right)) + 1;
+	(*n)->left->height = max(get_height((*n)->left->left), get_height((*n)->left->right)) + 1;
 
 }
 
@@ -137,7 +138,7 @@ void rr_rotate(Node** n) {
 	temp_root->left = NULL;
 	(*n)->right = temp_root;
 	(*n)->height = max(get_height((*n)->left), get_height((*n)->right)) + 1;
-	(*n)->right->height = max(get_height((*n)->left), get_height((*n)->right)) + 1;
+	(*n)->right->height = max(get_height((*n)->right->left), get_height((*n)->right->right)) + 1;
 }
 
 int get_balance(Node* n) {
