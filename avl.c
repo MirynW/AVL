@@ -78,7 +78,6 @@ void recur_insert(Node** n, int i) {
 	else if ((*n)->data < i) {
 		(*n)->balance_factor++;
 		recur_insert(&(*n)->right, i);
-		puts("Here");
 	}
 	else
 		return;
@@ -99,13 +98,13 @@ void recur_insert(Node** n, int i) {
 		rr_rotate(&(*n));
 		//(*n)->balance_factor = 0;
 	}
-	else if ((*n)->balance_factor < -1 && i >(*n)->left->data) {
+	else if ((*n)->balance_factor < -1 && i < (*n)->left->data) {
 		// LR
 		ll_rotate(&(*n)->left);
 		rr_rotate(&(*n));
 		//(*n)->balance_factor = 0;
 	}
-	else if ((*n)->balance_factor > 1 && i < (*n)->right->data) {
+	else if ((*n)->balance_factor > 1 && i > (*n)->right->data) {
 		// RL
 		rr_rotate(&(*n)->right);
 		ll_rotate(&(*n));
@@ -115,7 +114,7 @@ void recur_insert(Node** n, int i) {
 
 void recur_preorder(Node* n) {
 	if (n != NULL) {
-		printf("Data: %d\tBalance Factor: %d\n", n->data, n->balance_factor);
+		printf("Data: %d\tBalance Factor: %d\tHeight: %d\n", n->data, n->balance_factor, n->height);
 		recur_preorder(n->left);
 		recur_preorder(n->right);
 	}
@@ -123,10 +122,10 @@ void recur_preorder(Node* n) {
 
 void ll_rotate(Node** n) {
 	Node* temp_root = (*n);
-	Node* temp_weird = (*n)->right->left;
-	(*n) = (*n)->right;
-	temp_root->right = temp_weird;
+	Node* temp_right_left = (*n)->right->left;
+	(*n) = temp_root->right;
 	(*n)->left = temp_root;
+	(*n)->left->right = temp_right_left;
 	(*n)->height = max(get_height((*n)->left), get_height((*n)->right)) + 1;
 	(*n)->left->height = max(get_height((*n)->left->left), get_height((*n)->left->right)) + 1;
 
@@ -134,9 +133,10 @@ void ll_rotate(Node** n) {
 
 void rr_rotate(Node** n) {
 	Node* temp_root = (*n);
+	Node* temp_left_right = (*n)->left->right;
 	(*n) = (*n)->left;
-	temp_root->left = NULL;
 	(*n)->right = temp_root;
+	(*n)->right->left = temp_left_right;
 	(*n)->height = max(get_height((*n)->left), get_height((*n)->right)) + 1;
 	(*n)->right->height = max(get_height((*n)->right->left), get_height((*n)->right->right)) + 1;
 }
